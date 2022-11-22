@@ -1,8 +1,20 @@
 import React,{ useState } from "react";
 import { CognitoUserPool } from 'amazon-cognito-identity-js';
+import { useFormik } from "formik";
+import { signUpSchema } from "../schemas/index";
+
+const initialValues = {
+    name: "",
+    family_name: "",
+    email: "",
+    gender: "",
+    username:"",
+    password:"",
+};
 
 
 function Registration(){
+    
   const [name,setName] = useState('');
   const [family_name,setFamily_name] = useState('');
   const [email, setEmail] = useState('');
@@ -53,6 +65,20 @@ function Registration(){
     setGender(event.target.value);
   }
 
+  const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
+    useFormik({
+        initialValues,
+        validationSchema: signUpSchema,
+        onSubmit: (values, action) => {
+        console.log(
+            "🚀 ~ file: Registration.jsx ~ line 11 ~ Registration ~ values",
+            values
+        );
+        action.resetForm();
+        },
+    });
+
+
 return(
     <div className="container">
         <div className="row">
@@ -61,27 +87,31 @@ return(
                     <h4 className="text-center">Register Here</h4>
                     <div className="form-group">
                         <label htmlFor="Family name">Enter Name</label>
-                        <input type="text" className="form-control" value={name}
+                        <input type="text" className="form-control" name="name" value={name}
                          onChange={event => setName(event.target.value)}  />
                     </div>
                     <div className="form-group">
                         <label htmlFor="Family name">Surname</label>
-                        <input type="text" className="form-control" value={family_name}
-                         onChange={event => setFamily_name(event.target.value)}  />
+                        <input type="text" className="form-control" name="family_name" value={family_name}
+                        onBlur={handleBlur}
+                        onChange={event => setFamily_name(event.target.value)}/>
+                        {errors.name && touched.name ? (
+                        <p className="form-error">{errors.name}</p>
+                        ) : null}
                     </div>
                     <div className="form-group">
                         <label htmlFor="Username">Username</label>
-                        <input type="text" className="form-control" value={username} 
+                        <input type="text" className="form-control" name="username" value={username} 
                         onChange={event => setUsername(event.target.value)}  />
                     </div>
                     <div className="form-group">
                         <label htmlFor="Password">Password</label>
-                        <input type="password" className="form-control" value={password} 
+                        <input type="password" className="form-control" name="password" value={password} 
                         onChange={event => setPassword(event.target.value)}  />
                     </div>
                     <div className="form-group">
                         <label htmlFor="Email">Email</label>
-                        <input type="email" className="form-control" value={email} 
+                        <input type="email" className="form-control" name="email" value={email} 
                         onChange={event => setEmail(event.target.value)}  />
                     </div>
                     <div className="form-group">
