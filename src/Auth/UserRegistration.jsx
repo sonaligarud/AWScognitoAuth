@@ -1,7 +1,9 @@
-import React,{ useState } from "react";
+import React,{ useEffect, useState } from "react";
 import { CognitoUserPool } from 'amazon-cognito-identity-js';
 import { useFormik } from "formik";
 import { signUpSchema } from "../schemas/index";
+import VerifyCode from "./VerifyCode";
+import { useNavigate } from 'react-router-dom';
 
 const initialValues = {
     name: "",
@@ -12,13 +14,13 @@ const initialValues = {
     password:"",
 };
 
-
 function Registration(){
   
-  const poolData = {
-    UserPoolId: 'eu-central-1_revPjcIqO',
-    ClientId: '26pqlv6cp30qali9mdtlvc20if'
-  };
+    const navigation = useNavigate();
+    const poolData = {
+        UserPoolId: 'eu-central-1_revPjcIqO',
+        ClientId: '26pqlv6cp30qali9mdtlvc20if'
+    };
 
     const UserPool = new CognitoUserPool(poolData);
     const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
@@ -54,9 +56,8 @@ function Registration(){
                 console.log(err);
                 alert("Couldn't sign up");
                 } else {
-                console.log(data);
-                alert('User Added Successfully');
-                
+
+                    navigation('/getverificationcode/'+values.username);
                 }
             });
             action.resetForm();
