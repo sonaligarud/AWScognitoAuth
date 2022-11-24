@@ -15,7 +15,7 @@ const initialValues = {
 };
 
 function Registration(){
-  
+  const [errorMsg, setErrorMsg] = useState('');
     const navigation = useNavigate();
     const poolData = {
         UserPoolId: 'eu-central-1_revPjcIqO',
@@ -27,7 +27,7 @@ function Registration(){
     useFormik({
         initialValues,
         validationSchema: signUpSchema,
-        onSubmit: (values, action) => {
+        onSubmit: async (values, action) => {
         console.log(
             values
         );
@@ -50,16 +50,24 @@ function Registration(){
                 }
             ];
         
-            UserPool.signUp(values.username, values.password, attributeList, null, (err, data) => 
+            UserPool.signUp(values.username, values.password, attributeList, null,(err, data) => 
             {
-                if (err) {
-                console.log(err);
-                alert("Couldn't sign up");
-                } else {
+                if(err) 
+                {
+                    console.log(err);
+                    if(err.__type = 'UsernameExistsException')
+                    {
+                        setErrorMsg(err.message);
+                    }
+                    
+                }
+                else 
+                {
 
                     navigation('/getverificationcode/'+values.username);
                 }
             });
+            
             action.resetForm();
         },
     });
@@ -130,6 +138,9 @@ return(
                          onChange={handleChange}
                          defaultChecked={values.gender=== "Female"}/> Female <br/>
                         <div>Picked: {values.gender}</div>
+                    </div>
+                    <div className="form-group">
+                        <small className="text-danger">{errorMsg}</small>
                     </div>
                    <button type="submit" className="btn btn-primary">Signup</button>
                 </form>

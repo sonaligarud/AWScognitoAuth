@@ -1,9 +1,11 @@
 import React,{ useState } from "react";
 import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js';
 import { useParams } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 function VerifyCode()
 {
+    const navigation = useNavigate();
     const [ code, setCode ]= useState('');
     const { username } = useParams();
 
@@ -28,7 +30,9 @@ function VerifyCode()
                 alert(err.message || JSON.stringify(err));
                 return;
             }
+            alert('Registration done successfully');
             console.log('call result: ' + result);
+            navigation('/Login');
         });
     }
 
