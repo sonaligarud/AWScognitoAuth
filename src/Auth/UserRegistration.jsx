@@ -2,8 +2,8 @@ import React,{ useEffect, useState } from "react";
 import { CognitoUserPool } from 'amazon-cognito-identity-js';
 import { useFormik } from "formik";
 import { signUpSchema } from "../schemas/index";
-import VerifyCode from "./VerifyCode";
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const initialValues = {
     name: "",
@@ -61,7 +61,7 @@ function Registration(){
                     }
                     
                 }
-                else 
+                else
                 {
 
                     navigation('/getverificationcode/'+values.username);
@@ -76,9 +76,9 @@ function Registration(){
 return(
     <div className="container">
         <div className="row">
-            <div className="col-md-12 shadow-lg p-3 mb-5 bg-white rounded mt-5">
+            <div className="col-md-6 mx-auto shadow-lg p-3 mb-5 bg-white rounded mt-5">
                 <form onSubmit={handleSubmit}>
-                    <h4 className="text-center">Register Here</h4>
+                    <h4 className="text-center">Register</h4>
                     <div className="form-group">
                         <label htmlFor="Family name">Enter Name</label>
                         <input type="text" className="form-control" name="name"
@@ -137,12 +137,17 @@ return(
                         <input type="radio" value="Female" name="gender"
                          onChange={handleChange}
                          defaultChecked={values.gender=== "Female"}/> Female <br/>
-                        <div>Picked: {values.gender}</div>
                     </div>
                     <div className="form-group">
                         <small className="text-danger">{errorMsg}</small>
                     </div>
-                   <button type="submit" className="btn btn-primary">Signup</button>
+                    <div className="form-group text-center">
+                        OR
+                    </div>
+                    <div className="form-group text-center">
+                        <h6>Already a user <Link className="border-bottom" to="/login">Login</Link></h6>
+                    </div>
+                   <button type="submit" className="btn btn-primary">Register</button>
                 </form>
             </div>
         </div>
