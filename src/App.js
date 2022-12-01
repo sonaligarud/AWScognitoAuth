@@ -4,7 +4,9 @@ import Registration from './Auth/UserRegistration';
 import VerifyCode from './Auth/VerifyCode';
 import Login from './Auth/Login';
 import Homepage from './Home';
-import { Routes, Route, Router} from 'react-router-dom'
+import GetUsers from './MyProfile';
+import { Routes, Route, Router} from 'react-router-dom';
+import ForgotPassword from './Auth/ForgotPassword';
 
 
 function App() {
@@ -14,6 +16,8 @@ function App() {
         <Route path="getverificationcode/:username" element={<VerifyCode />} />
         <Route path="login" element={<Login />} />
         <Route path="Homepage" element={<Homepage/>} />
+        <Route path="Myprofile" element={<GetUsers/>} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
     </Routes>
   );
 }

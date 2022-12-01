@@ -1,37 +1,16 @@
 import React, { useState } from "react";
 import { AuthenticationDetails, CognitoUserPool, CognitoUser } from "amazon-cognito-identity-js";
 import { useNavigate, useNavigation } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 export default () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigate();
+  var AWS = require("aws-sdk");
 
   const onSubmit = event => {
     event.preventDefault();
-
-    // const user = new CognitoUser({
-    //   Username: username,
-    //   Pool: UserPool
-    // });
-    // const authDetails = new AuthenticationDetails({
-    //   Username: username,
-    //   Password: password
-    // });
-
-    // user.authenticateUser(authDetails, {
-    //   onSuccess: data => {
-    //     console.log("onSuccess:", data);
-    //   },
-
-    //   onFailure: err => {
-    //     console.error("onFailure:", err);
-    //   },
-
-    //   newPasswordRequired: data => {
-    //     console.log("newPasswordRequired:", data);
-    //   }
-    // });
 
     var authenticationData = {
         Username: username,
@@ -50,36 +29,31 @@ export default () => {
         Pool: userPool,
     };
     var cognitoUser = new CognitoUser(userData);
+
     cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: function(result) 
         {
             alert("Login done successfully");
             navigation('/Homepage');
-            // var accessToken = result.getAccessToken().getJwtToken();
+            var accessToken = result.getAccessToken().getJwtToken();
     
-            //POTENTIAL: Region needs to be set if not already set previously elsewhere.
-            // AWS.config.region = '<region>';
+            AWS.config.region = 'eu-central-1';
     
-            // AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-            //     IdentityPoolId: '...', // your identity pool id here
-            //     Logins: {
-            //         // Change the key below according to the specific region your user pool is in.
-            //         'cognito-idp.<region>.amazonaws.com/<YOUR_USER_POOL_ID>': result
-            //             .getIdToken()
-            //             .getJwtToken(),
-            //     },
-            // });
-    
-            // //refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
-            // AWS.config.credentials.refresh(error => {
-            //     if (error) {
-            //         console.error(error);
-            //     } else {
-            //         // Instantiate aws sdk service objects now that the credentials have been updated.
-            //         // example: var s3 = new AWS.S3();
-            //         console.log('Successfully logged!');
-            //     }
-            // });
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: 'eu-central-1:ab4b71e0-14d9-4555-8cb3-459614ec6f1e', 
+                Logins: {
+                    'cognito-idp.eu-central-1.amazonaws.com/eu-central-1_revPjcIqO': result
+                        .getIdToken()
+                        .getJwtToken(),
+                },
+            });
+            AWS.config.credentials.refresh(error => {
+                if (error) {
+                    console.error(error);
+                } else {
+                    console.log('Successfully logged!');
+                }
+            });
         },
     
         onFailure: function(err) {
@@ -94,6 +68,7 @@ export default () => {
         <div className="row">
             <div className="col-md-6 mx-auto shadow-lg p-3 mb-5 bg-white rounded mt-5">
                 <form onSubmit={onSubmit}>
+                    <h4 className="text-center">Login</h4>
                     <label>Username</label>
                     <input type="text" className="form-control" value={username} onChange={event => setUsername(event.target.value)} />
                     <br/>
@@ -103,6 +78,9 @@ export default () => {
                     onChange={event => setPassword(event.target.value)}
                     />
                     <br/>
+                    <div className="form-group text-center">
+                        <h6>Need an account <Link className="border-bottom" to="/">Register</Link></h6>
+                    </div>
                     <button type="submit" className="btn btn-primary">Login</button>
                 </form>
             </div>
